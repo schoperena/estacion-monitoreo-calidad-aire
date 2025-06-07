@@ -216,3 +216,20 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
 ---
 
 ¡Esperamos que sea util este proyecto! Si tienes alguna pregunta o sugerencia, no dudes en abrir un "Issue" en el repositorio. Happy Hacking! 🚀
+
+## 📜 Licencia
+
+Este proyecto se distribuye bajo la licencia **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**.
+
+![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
+
+**Esto significa que eres libre de:**
+* **Compartir** — copiar y redistribuir el material en cualquier medio o formato.
+* **Adaptar** — remezclar, transformar y construir a partir del material.
+
+**Bajo las siguientes condiciones:**
+* **Atribución** — Debes dar crédito de manera adecuada, proporcionar un enlace a la licencia, e indicar si se han realizado cambios.
+* **No Comercial** — **No puedes utilizar el material para una finalidad comercial.**
+* **Compartir Igual** — Si remezclas, transformas o creas a partir del material, deberás distribuir tus contribuciones bajo la misma licencia que el original.
+
+Puedes ver el texto completo de la licencia en el archivo [LICENSE](LICENSE.md) de este repositorio.
