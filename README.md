@@ -142,7 +142,12 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
 3.  **Obtener ID de la Hoja de Cálculo:** Copia el ID de tu hoja de cálculo de la URL. Por ejemplo, si la URL es `https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID_LARGO/edit#gid=0`, el ID es `ESTE_ES_EL_ID_LARGO`.
 4.  **Abrir Editor de Scripts:** En tu hoja de cálculo, ve a `Extensiones > Apps Script`.
 5.  **Pegar el Código del Script:** Borra cualquier código existente en el editor y pega el contenido de `google_apps_script.gs` que se proporciona en este proyecto.
-6.  **Actualizar ID en el Script:** Dentro del código del script, localiza la línea `var sheetId = "1YG-QNsZTo1uTu1pK27krv6wenaQEufblueP9vAEQdKM";` y reemplaza el ID de ejemplo con el ID real de tu hoja de cálculo que copiaste en el paso 3.
+6.  **Actualizar ID en el Script:** Dentro del código del script, localiza y cambia las líneas:
+    ```js
+        var sheetId = "ID_SREAD_SHEET_AQUI";
+        var sheet = spreadsheet.getSheetByName("NOMBRE_DE_LA_HOJA_ACTIVA");
+    ```
+ 
 7.  **Desplegar como Aplicación Web:**
     * Haz clic en el botón "**Implementar**" (o "Deploy") en la parte superior derecha.
     * Selecciona "**Nueva implementación**" (o "New deployment").

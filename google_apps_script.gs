@@ -8,9 +8,9 @@ function doPost(e) {
 
 function handleRequest(e) {
   // ID del archivo de Google Sheets (el que aparece en la URL)
-  var sheetId = "1YG-QNsZTo1uTu1pK27krv6wenaQEufblueP9vAEQdKM";
+  var sheetId = "ID_SREAD_SHEET_AQUI";
   var spreadsheet = SpreadsheetApp.openById(sheetId);
-  var sheet = spreadsheet.getSheetByName("Datos");
+  var sheet = spreadsheet.getSheetByName("NOMBRE_DE_LA_HOJA");
 
   if (!sheet) {
     return ContentService.createTextOutput("Error: hoja 'Datos' no encontrada.");

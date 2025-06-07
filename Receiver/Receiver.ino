@@ -9,6 +9,7 @@
 #include <HTTPClient.h>
 #include <Wire.h>
 #include "SSD1306.h"
+#include "screens_sch.h"
 
 const char* ssid = "TU_SSID_WIFI";
 const char* password = "TU_PASSWORD_WIFI";
@@ -26,6 +27,8 @@ void setup() {
   digitalWrite(16, HIGH);
   display.init();
   display.flipScreenVertically();
+  boot_logo();
+  qr_git();
   display.setFont(ArialMT_Plain_10);
 
   // Conectar WiFi
