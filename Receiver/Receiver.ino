@@ -1,7 +1,11 @@
-/* 
-  Codigo del receptor para el proyecto de estacion de monitoreo de calidad del aire.
-  Author: Sebastian Choperena Solano <choperena97@gmail.com> 
-*/
+// Copyright (c) 2025 schoperena (Sebastian Choperena Solano)
+
+// Este archivo es parte de estacion-monitoreo-calidad-aire.
+// estacion-monitoreo-calidad-aire se distribuye bajo la licencia Creative Commons
+// Attribution-NonCommercial-ShareAlike 4.0 International.
+
+// Deberías haber recibido una copia de la licencia junto con este programa.
+// Si no, consulta <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 #include <SPI.h>
 #include <LoRa.h>

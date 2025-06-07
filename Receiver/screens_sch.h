@@ -1,3 +1,12 @@
+// Copyright (c) 2025 schoperena (Sebastian Choperena Solano)
+
+// Este archivo es parte de estacion-monitoreo-calidad-aire.
+// estacion-monitoreo-calidad-aire se distribuye bajo la licencia Creative Commons
+// Attribution-NonCommercial-ShareAlike 4.0 International.
+
+// Deberías haber recibido una copia de la licencia junto con este programa.
+// Si no, consulta <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
+
 #include "SSD1306.h"
 
 extern SSD1306 display;
