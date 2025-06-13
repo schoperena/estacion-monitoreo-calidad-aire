@@ -14,12 +14,15 @@
 #include <Wire.h>
 #include "SSD1306.h"
 #include "screens_sch.h"
+#include <ESPmDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 const char* ssid = "TU_SSID_WIFI";
 const char* password = "TU_PASSWORD_WIFI";
 const char* webhook = "URL_DE_TU_WEBHOOK_AQUI";
 
-SSD1306 display(0x3c, 4, 15); // SDA, SCL
+SSD1306 display(0x3c, 4, 15);  // SDA, SCL
 
 void setup() {
   Serial.begin(115200);
@@ -32,7 +35,6 @@ void setup() {
   display.init();
   display.flipScreenVertically();
   boot_logo();
-  qr_git();
   display.setFont(ArialMT_Plain_10);
 
   // Conectar WiFi
@@ -45,19 +47,62 @@ void setup() {
   }
   display.clear();
   display.drawString(0, 0, "WiFi conectado");
+  display.drawString(0, 12, "IP: " + WiFi.localIP().toString());
   display.display();
   delay(1000);
 
+  // INICIO: Configuración del servicio OTA
+  // Se configura DESPUÉS de una conexión WiFi exitosa.
+  ArduinoOTA.setHostname("Receptor-Calidad-Aire");  // Nombre que aparecerá en el IDE
+  ArduinoOTA.setPassword("schoperena");             //Contraseña para poder subir codigo por OTA
+
+  ArduinoOTA.onStart([]() {
+    String type;
+    if (ArduinoOTA.getCommand() == U_FLASH) {
+      type = "sketch";
+    } else {  // U_SPIFFS
+      type = "filesystem";
+    }
+    Serial.println("Start updating " + type);
+    display.clear();
+    display.drawString(0, 0, "Recibiendo OTA...");
+    display.display();
+  });
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\nEnd");
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    display.clear();
+    display.drawString(0, 0, "Actualizando...");
+    display.drawProgressBar(0, 15, 120, 10, (progress / (total / 100)));
+    display.display();
+  });
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+    else if (error == OTA_END_ERROR) Serial.println("End Failed");
+  });
+
+  ArduinoOTA.begin();
+  Serial.println("Servicio OTA listo");
+
   // Iniciar LoRa
-  LoRa.setPins(18, 14, 26); // NSS, RST, DIO0
+  LoRa.setPins(18, 14, 26);  // NSS, RST, DIO0
   if (!LoRa.begin(915E6)) {
     Serial.println("Fallo al iniciar LoRa");
-    while (1);
+    while (1)
+      ;
   }
   Serial.println("LoRa Receptor listo");
 }
 
 void loop() {
+  ArduinoOTA.handle();
+
   int packetSize = LoRa.parsePacket();
   if (packetSize) {
     String received = "";
@@ -88,15 +133,13 @@ void loop() {
         http.begin(webhook);
         http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        String postData = "temperatura=" + String(temperature) +
-                          "&humedad=" + String(humidity) +
-                          "&calidad=" + String(calidad);
+        String postData = "temperatura=" + String(temperature) + "&humedad=" + String(humidity) + "&calidad=" + String(calidad);
 
         int httpResponseCode = http.POST(postData);
         Serial.println("HTTP: " + String(httpResponseCode));
         http.end();
 
-        delay(1000); // pequeño delay para no saturar peticiones
+        delay(1000);  // pequeño delay para no saturar peticiones
       } else {
         Serial.println("WiFi desconectado, reintentando...");
         WiFi.disconnect();

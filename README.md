@@ -1,6 +1,6 @@
 # 🌡️💧💨 Monitor Ambiental LoRa con ESP32 y Google Sheets
 
-¡Bienvenido a este proyecto de monitoreo ambiental! Este sistema utiliza dos placas TTGO LoRa32 V1 (ESP32) para recolectar datos de temperatura, humedad y calidad del aire. Un nodo emisor envía los datos a través de LoRa, y un nodo receptor los capta, los muestra en una pantalla OLED y los sube a una hoja de cálculo de Google Sheets para su visualización y análisis.
+¡Bienvenido a este proyecto de monitoreo ambiental! Este sistema utiliza dos placas TTGO LoRa32 V1 (ESP32) para recolectar datos de temperatura, humedad y calidad del aire. Un nodo emisor envía los datos a través de LoRa, y un nodo receptor los capta, los muestra en una pantalla OLED, los sube a una hoja de cálculo de Google Sheets y, además, ¡puede ser actualizado de forma inalámbrica (OTA)!
 
 ---
 
@@ -40,6 +40,8 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
     * `Adafruit Unified Sensor` (dependencia para DHT)
     * `SSD1306` (para la pantalla OLED, ej. by ThingPulse o Adafruit)
     * `HTTPClient` (para las peticiones web en el ESP32)
+    * `ArduinoOTA` (para las actualizaciones inalámbricas)
+    * `ESPmDNS` y `WiFiUdp` (dependencias para ArduinoOTA)
 
 ---
 
@@ -73,6 +75,7 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
 
 1.  **Inicialización:**
     * Se conecta a la red WiFi especificada. Muestra el estado de la conexión en la pantalla OLED.
+    * Una vez conectado, inicia el servicio de Actualización por Aire (OTA) para permitir futuras cargas de código por WiFi.
     * Inicializa el módulo LoRa para recibir datos. Muestra el estado en la OLED.
 2.  **Recepción de Datos LoRa:**
     * Escucha continuamente paquetes LoRa entrantes.
@@ -114,7 +117,7 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
     * Conecta el pin de salida analógica (AO) del sensor MQ135 al pin `GPIO34` del TTGO LoRa32 (o el pin definido en `#define MQ135_PIN 34`).
     * Asegúrate de alimentar correctamente los sensores (VCC y GND).
 
-![Emisor con una abteria 18650 y la pantalla activa](https://iili.io/FJKFDN4.jpg)
+![Emisor con una batería 18650 y la pantalla activa](https://iili.io/FJKFDN4.jpg)
 
 * **Nodo Receptor:**
     * Generalmente no requiere conexiones adicionales si solo usa la pantalla OLED y LoRa integrados en el TTGO.
@@ -127,7 +130,7 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
     ```
     https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
     ```
-    Luego, ve a `Herramientas > Placa > Gestor de Tarjetas`, busca "esp32" e instala el paquete de Espressif Systems (en este caso se trabajó con la version 2.0.9).
+    Luego, ve a `Herramientas > Placa > Gestor de Tarjetas`, busca "esp32" e instala el paquete de Espressif Systems (se trabajó con la **versión** 2.0.9).
 2.  **Seleccionar Placa:** En `Herramientas > Placa`, selecciona "TTGO LoRa32-OLED V1" (o la placa ESP32 que estés usando).
 3.  **Instalar Bibliotecas:** Ve a `Herramientas > Administrar Bibliotecas` e instala las siguientes:
     * `LoRa` por Sandeep Mistry
@@ -144,7 +147,7 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
 5.  **Pegar el Código del Script:** Borra cualquier código existente en el editor y pega el contenido de `google_apps_script.gs` que se proporciona en este proyecto.
 6.  **Actualizar ID en el Script:** Dentro del código del script, localiza y cambia las líneas:
     ```js
-        var sheetId = "ID_SREAD_SHEET_AQUI";
+        var sheetId = "ID_SPREADSHEET_AQUI";
         var sheet = spreadsheet.getSheetByName("NOMBRE_DE_LA_HOJA_ACTIVA");
     ```
  
@@ -192,6 +195,17 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
     * El nodo receptor mostrará los datos recibidos en su pantalla OLED.
     * Abre tu hoja de Google Sheets. Deberías ver nuevos datos aparecer cada vez que el receptor envía información. ¡🎉!
 
+4. **Actualizaciones Futuras (OTA por WiFi):**
+
+Una vez que el código inicial está en el receptor, ya no necesitas cables para actualizarlo.
+
+1. **Asegúrate** de que el nodo receptor esté encendido y conectado a la misma red WiFi que tu computadora.
+2. **Abre el Arduino IDE** y realiza los cambios que desees en el código receiver.ino.
+3. Ve al menú `Herramientas > Puerto`. Espera unos segundos. Además de los puertos COM, verás una sección de "Puertos de Red". Ahí aparecerá tu dispositivo con el nombre que configuraste (ej. `LoRa-Receptor-Aire`).
+Selecciona ese puerto de red.
+4. **Igresa la contraseña para subir el codigo:** `schoperena`
+5. Haz clic en el botón de **"Subir"** como lo harías normalmente.
+6. Verás el progreso de la subida en la consola del IDE y en la pantalla OLED del receptor. La placa se reiniciará sola con el nuevo código.
 ---
 
 ## 🌟 Características Destacadas
@@ -202,13 +216,13 @@ Es una solución ideal para monitorear condiciones ambientales en lugares remoto
 * **Almacenamiento en la Nube:** Integración con Google Sheets para fácil acceso y análisis de datos históricos.
 * **Interpretación de Datos:** El script de Google Apps proporciona una interpretación básica de la calidad del aire.
 * **Adaptable:** Fácil de modificar para añadir más sensores o cambiar la lógica.
-
+* **Actualizaciones Inalámbricas (OTA):** El nodo receptor puede ser actualizado con nuevo software a través de WiFi, sin necesidad de conexión física.
 ---
 
 ## 🔮 Posibles Mejoras Futuras
 
 * **Calibración del MQ135:** Implementar una rutina de calibración para el sensor MQ135 para obtener lecturas de PPM más precisas.
-* **Impelementar un sensor PM2.5 y PM10:** Implementar un sensor más preciso que mida la polución en el aire de particulas PM2.5 y PM10.
+* **Implementar un sensor PM2.5 y PM10:** Implementar un sensor más preciso que mida la polución en el aire de particulas PM2.5 y PM10.
 * **Cifrado de Datos LoRa:** Añadir una capa de cifrado a los mensajes LoRa para mayor seguridad.
 * **Gestión de Errores Mejorada:** Implementar reintentos más robustos para el envío HTTP y un mejor feedback de errores.
 * **Alertas:** Configurar el script de Google Apps para enviar alertas por correo electrónico si los valores de los sensores cruzan ciertos umbrales.
