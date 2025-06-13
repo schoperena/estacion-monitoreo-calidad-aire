@@ -24,7 +24,7 @@ void boot_logo() {
 
   display.setFont(ArialMT_Plain_10);
   display.drawString(29, 2, "Lora GateWay");
-  display.drawString(29, 12, "HTTP Seerver");
+  display.drawString(32, 12, "HTTP Server");
 
   display.drawXbm(68, 43, 17, 16, (const char *)image_download_bits);
   display.drawXbm(43, 43, 17, 16, (const char *)image_download_1_bits);
